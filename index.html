@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Immersive Garden - Transcendent Digital Experiences</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #fff;
+      color: #000;
+      overflow-x: hidden;
+      line-height: 1.6;
+      cursor: none;
+    }
+
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background: url('3d2.jpg') no-repeat center center;
+      background-size: cover;
+      transition: background-position 0.2s ease-out;
+      pointer-events: none;
+      /* optional: allows mouse to pass through */
+    }
+
+
+    /* Moving particles background */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: floatParticle 15s linear infinite;
+    }
+
+    /* White overlay with spotlight hole */
+    .spotlight-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle 350px at var(--mouse-x, 40%) var(--mouse-y, 70%),
+          transparent 0%,
+          transparent 30%,
+          rgba(255, 255, 255, 0.95) 70%,
+          white 100%);
+      z-index: 5;
+      pointer-events: none;
+      transition: all 0.1s ease-out;
+    }
+
+    /* Content layer */
+    .content-layer {
+      position: relative;
+      z-index: 20;
+      background: transparent;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.1s ease;
+      backdrop-filter: blur(5px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .cursor-inner {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.05s ease;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 30px 50px;
+      background: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: #000;
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeInUp 1s ease-out 0.5s forwards;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+    }
+
+    .nav-links a {
+      color: #000;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeInUp 1s ease-out forwards;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .nav-links a:nth-child(1) {
+      animation-delay: 0.7s;
+    }
+
+    .nav-links a:nth-child(2) {
+      animation-delay: 0.8s;
+    }
+
+    .nav-links a:nth-child(3) {
+      animation-delay: 0.9s;
+    }
+
+    .nav-links a:hover {
+      transform: translateY(-2px);
+      opacity: 0.7;
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: transparent;
+    }
+
+    .hero-content {
+      text-align: center;
+      max-width: 900px;
+      padding: 0 50px;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 200;
+      letter-spacing: -3px;
+      line-height: 1.1;
+      margin-bottom: 40px;
+      color: #000;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUp 1.2s ease-out 1s forwards;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+
+    .hero p {
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-weight: 300;
+      color: #333;
+      letter-spacing: 0.5px;
+      max-width: 600px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s ease-out 1.5s forwards;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Projects Section */
+    .projects {
+      padding: 150px 0;
+      background: transparent;
+    }
+
+    .project {
+      margin-bottom: 200px;
+      padding: 0 50px;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .project.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .project-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .project:nth-child(even) .project-content {
+      direction: rtl;
+    }
+
+    .project:nth-child(even) .project-content>* {
+      direction: ltr;
+    }
+
+    .project-info h3 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 200;
+      margin-bottom: 20px;
+      letter-spacing: -2px;
+      color: #000;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+
+    .project-type {
+      color: #666;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      font-weight: 500;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .project-description {
+      font-size: 18px;
+      line-height: 1.8;
+      color: #333;
+      margin-bottom: 50px;
+      font-weight: 300;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      color: #000;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.4s ease;
+      border-bottom: 2px solid #000;
+      padding-bottom: 8px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .project-link:hover {
+      transform: translateX(10px);
+      opacity: 0.7;
+    }
+
+    .project-visual {
+      aspect-ratio: 4/3;
+      background: url("braclet-new10.jpg");
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .project-visual:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-visual::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .project-visual:hover::after {
+      opacity: 1;
+    }
+
+    /* Project specific backgrounds */
+    .project-louis .project-visual {
+      background: url("braclet-new12.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 4s ease-in-out infinite;
+    }
+
+    .project-david .project-visual {
+       background: url("braclet-new10.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 5s ease-in-out infinite;
+    }
+
+    .project-cartier .project-visual {
+     background: url("braclet-new11.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease-in-out infinite;
+    }
+
+    .project-chartogne .project-visual {
+     background: url("braclet-new13.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 7s ease-in-out infinite;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 150px 50px 100px;
+      text-align: center;
+      background: transparent;
+    }
+
+    .footer h2 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 200;
+      margin-bottom: 60px;
+      color: #000;
+      letter-spacing: -1px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+
+    .footer-links a {
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .footer-links a:hover {
+      color: #000;
+      transform: translateY(-2px);
+    }
+
+    .footer-copyright {
+      color: #999;
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes gradientMove {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      25% {
+        background-position: 100% 50%;
+      }
+
+      50% {
+        background-position: 100% 0%;
+      }
+
+      75% {
+        background-position: 0% 100%;
+      }
+    }
+
+    @keyframes dotMove {
+      0% {
+        background-position: 0 0;
+      }
+
+      100% {
+        background-position: 50px 50px;
+      }
+    }
+
+    @keyframes floatParticle {
+      0% {
+        transform: translateY(100vh) translateX(0px) scale(0);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+        transform: translateY(90vh) translateX(10px) scale(1);
+      }
+
+      90% {
+        opacity: 1;
+        transform: translateY(10vh) translateX(-10px) scale(1);
+      }
+
+      100% {
+        transform: translateY(0vh) translateX(0px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes gradientShift {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav {
+        padding: 20px 25px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .project-content {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+
+      .projects {
+        padding: 100px 0;
+      }
+
+      .project {
+        padding: 0 25px;
+        margin-bottom: 120px;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .spotlight-overlay {
+        background: radial-gradient(circle 200px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            transparent 0%,
+            transparent 20%,
+            rgba(255, 255, 255, 0.95) 60%,
+            white 100%);
+      }
+    }
+
+    /* Mobile touch support */
+    @media (hover: none) {
+      .spotlight-overlay {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      body {
+        cursor: auto;
+      }
+
+      .cursor,
+      .cursor-inner {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated background layer -->
+  <div class="bg-layer"></div>
+
+  <!-- Moving particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Spotlight overlay (white with hole) -->
+  <div class="spotlight-overlay" id="spotlightOverlay"></div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-inner" id="cursorInner"></div>
+
+  <!-- Content layer -->
+  <div class="content-layer">
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-content">
+        <div class="logo">IMMERSIVE GARDEN</div>
+        <div class="nav-links">
+          <a href="#work">Work</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Transcend anything seen or felt before by crafting.</h1>
+        <p>Explore our collaboration with luxury brands, showcasing visionary digital experiences through immersive
+          storytelling and cutting-edge technology.</p>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects" id="work">
+      <div class="project project-louis">
+        <div class="project-content">
+          <div class="project-info">
+            <div class="project-type">Web Experience</div>
+            <h3>Louis Vuitton VIA</h3>
+            <p class="project-description">Explore our collaboration with Louis Vuitton on VIA, showcasing the Maison's
+              Web 3 vision through its first digital trunk.</p>
+            <a href="#" class="project-link">View Project</a>
+          </div>
+          <div class="project-visual"></div>
+        </div>
+      </div>
+
+      <div class="project project-david">
+        <div class="project-content">
+          <div class="project-info">
+            <div class="project-type">Web Experience</div>
+            <h3>David Whyte Experience</h3>
+            <p class="project-description">Step into David Whyte's poetry in a digital journey, capturing life's
+              profound moments with artistic depth.</p>
+            <a href="#" class="project-link">View Project</a>
+          </div>
+          <div class="project-visual"></div>
+        </div>
+      </div>
+
+      <div class="project project-cartier">
+        <div class="project-content">
+          <div class="project-info">
+            <div class="project-type">E-Shop</div>
+            <h3>Cartier End of Year 23</h3>
+            <p class="project-description">Discover Cartier's End of Year: redefining elegance with an immersive
+              campaign, Above the Clouds.</p>
+            <a href="#" class="project-link">View Project</a>
+          </div>
+          <div class="project-visual"></div>
+        </div>
+      </div>
+
+      <div class="project project-chartogne">
+        <div class="project-content">
+          <div class="project-info">
+            <div class="project-type">Web Experience</div>
+            <h3>Chartogne Taillet</h3>
+            <p class="project-description">Explore the rich heritage and vineyards of Chartogne-Taillet through
+              immersive digital storytelling.</p>
+            <a href="#" class="project-link">View Project</a>
+          </div>
+          <div class="project-visual"></div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="project-content">
+          <div class="project-info">
+            <div class="project-type">Web Experience</div>
+            <h3>Cartier in Time</h3>
+            <p class="project-description">Dive into a journey with Jake Gyllenhaal, unveiling Cartier's timeless bond
+              with time in a stunning digital showcase.</p>
+            <a href="#" class="project-link">View Project</a>
+          </div>
+          <div class="project-visual"></div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="project-content">
+          <div class="project-info">
+            <div class="project-type">Web Experience</div>
+            <h3>Dioriviera</h3>
+            <p class="project-description">Step into an exquisite 3D journey through Dioriviera, where Maria Grazia
+              Chiuri's visionary designs come to life in breathtaking detail.</p>
+            <a href="#" class="project-link">View Project</a>
+          </div>
+          <div class="project-visual"></div>
+          </data>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+      <h2>Let's create something extraordinary</h2>
+      <div class="footer-links">
+        <a href="mailto:hello@immersive-g.com">hello@immersive-g.com</a>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Twitter</a>
+      </div>
+      <p class="footer-copyright">© 2024 Immersive Garden. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Mouse position tracking
+    let mouseX = 0;
+    let mouseY = 0;
+
+    const cursor = document.getElementById('cursor');
+    const cursorInner = document.getElementById('cursorInner');
+    const spotlightOverlay = document.getElementById('spotlightOverlay');
+
+    // Create particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Mouse move handler
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      const mouseXPercent = (mouseX / window.innerWidth) * 100;
+      const mouseYPercent = (mouseY / window.innerHeight) * 100;
+
+      // Update cursor positions
+      cursor.style.left = mouseX - 15 + 'px';
+      cursor.style.top = mouseY - 15 + 'px';
+
+      cursorInner.style.left = mouseX - 3 + 'px';
+      cursorInner.style.top = mouseY - 3 + 'px';
+
+      // Update spotlight position using CSS variables
+      spotlightOverlay.style.setProperty('--mouse-x', mouseXPercent + '%');
+      spotlightOverlay.style.setProperty('--mouse-y', mouseYPercent + '%');
+    });
+
+    // Hover effects for interactive elements
+    const interactiveElements = document.querySelectorAll('a, .project-visual, .logo');
+
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(1.5)';
+        cursor.style.borderColor = 'rgba(255, 255, 255, 1)';
+        cursor.style.background = 'rgba(255, 255, 255, 0.2)';
+        cursorInner.style.transform = 'scale(0.5)';
+      });
+
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        cursor.style.borderColor = 'rgba(255, 255, 255, 0.8)';
+        cursor.style.background = 'rgba(255, 255, 255, 0.1)';
+        cursorInner.style.transform = 'scale(1)';
+      });
+    });
+
+    // Scroll animations for projects
+    function animateOnScroll() {
+      const projects = document.querySelectorAll('.project');
+      const triggerBottom = window.innerHeight * 0.8;
+
+      projects.forEach(project => {
+        const projectTop = project.getBoundingClientRect().top;
+
+        if (projectTop < triggerBottom) {
+          project.classList.add('visible');
+        }
+      });
+    }
+
+    // Intersection Observer for better performance
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+
+      // Observe all projects
+      document.querySelectorAll('.project').forEach(project => {
+        observer.observe(project);
+      });
+
+      // Initial animation check
+      animateOnScroll();
+
+      // Set initial spotlight position
+      spotlightOverlay.style.setProperty('--mouse-x', '50%');
+      spotlightOverlay.style.setProperty('--mouse-y', '50%');
+    });
+
+    // Event listeners
+    window.addEventListener('scroll', animateOnScroll);
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Mobile touch handling
+    if ('ontouchstart' in window) {
+      document.body.style.cursor = 'auto';
+      cursor.style.display = 'none';
+      cursorInner.style.display = 'none';
+    }
+    let lastY = 0;
+
+    document.addEventListener('mousemove', function (e) {
+      const currentY = e.clientY;
+      const bgLayer = document.querySelector('.bg-layer');
+
+      // Calculate direction
+      if (currentY < lastY) {
+        // Mouse moving up → image moves down
+        moveBackground("down");
+      } else if (currentY > lastY) {
+        // Mouse moving down → image moves up
+        moveBackground("up");
+      }
+
+      lastY = currentY;
+    });
+
+    let positionY = 50; // Initial vertical position in percentage
+
+    function moveBackground(direction) {
+      const step = 1; // Change this to control speed
+      if (direction === "up") {
+        positionY = Math.max(0, positionY - step);
+      } else {
+        positionY = Math.min(100, positionY + step);
+      }
+
+      document.querySelector('.bg-layer').style.backgroundPosition = `center ${positionY}%`;
+    }
+
+    // Listen to mouse wheel events
+    window.addEventListener("wheel", function (e) {
+      if (e.deltaY < 0) {
+        moveBackground("up");   // Scroll up
+      } else {
+        moveBackground("down"); // Scroll down
+      }
+    });
+
+  </script>
+</body>
+
+</html>
