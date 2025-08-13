@@ -32,7 +32,7 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-      background: url('3d2.jpg') no-repeat center center;
+      background: url('background.jpg') no-repeat center center;
       background-size: cover;
       transition: background-position 0.2s ease-out;
       pointer-events: none;
@@ -473,8 +473,7 @@
         background-position: 100% 50%;
       }
     }
-
-    /* Responsive */
+       /* Responsive */
     @media (max-width: 768px) {
       .nav {
         padding: 20px 25px;
@@ -508,14 +507,14 @@
             transparent 0%,
             transparent 20%,
             rgba(255, 255, 255, 0.95) 60%,
-            white 100%);
+            rgba(92, 89, 89, 0.53) 100%);
       }
     }
 
     /* Mobile touch support */
     @media (hover: none) {
       .spotlight-overlay {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(120, 114, 114, 0.3);
       }
 
       body {
@@ -543,7 +542,7 @@
   <!-- Custom cursor -->
   <div class="cursor" id="cursor"></div>
   <div class="cursor-inner" id="cursorInner"></div>
-
+<div class="water-drop"></div>
   <!-- Content layer -->
   <div class="content-layer">
     <!-- Navigation -->
@@ -551,7 +550,7 @@
       <div class="nav-content">
         <div class="logo">IMMERSIVE GARDEN</div>
         <div class="nav-links">
-          <a href="#work">Work</a>
+          <a href="index1.html">2</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
         </div>
@@ -830,6 +829,20 @@
         moveBackground("down"); // Scroll down
       }
     });
+     const drop = document.querySelector('.water-drop');
+
+  function moveDrop() {
+    const randomX = Math.random() * window.innerWidth;
+    const randomY = Math.random() * window.innerHeight;
+
+    drop.style.left = `${randomX}px`;
+    drop.style.top = `${randomY}px`;
+
+    // Repeat after some time
+    setTimeout(moveDrop, 1000 + Math.random() * 1500); // move every 1-2.5s
+  }
+
+  moveDrop(); 
 
   </script>
 </body>
