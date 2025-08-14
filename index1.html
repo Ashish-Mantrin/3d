@@ -18,7 +18,7 @@
 
     body {
       font-family: 'Helvetica Neue', Arial, sans-serif;
-      background: url(background.jpg);
+      background: #ffffff88;
       color: #000;
       overflow-x: hidden;
       line-height: 1.6;
@@ -29,14 +29,14 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 110%;
-      height: 110%;
+      width: 100%;
+      height: 100%;
       z-index: 1;
-      background: url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80') no-repeat center center;
-      background-size: cover;
-      transition: transform 0.1s ease-out;
+      background: url(img1.png) no-repeat center center;
+      background-size: 110%; /* Slightly larger to allow movement */
+      transition: background-position 0.2s ease-out, transform 0.2s ease-out;
       pointer-events: none;
-      transform-origin: center center;
+      transform: scale(1); /* Initial scale for subtle zoom effect */
     }
 
     /* Moving particles background */
@@ -54,44 +54,26 @@
       position: absolute;
       width: 4px;
       height: 4px;
-      background: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 252, 252, 0.6);
       border-radius: 50%;
       animation: floatParticle 15s linear infinite;
     }
 
-    /* Enhanced spotlight overlay with blur effect on content areas */
+    /* White overlay with spotlight hole */
     .spotlight-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle 400px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      background: radial-gradient(circle 160px at var(--mouse-x, 40%) var(--mouse-y, 70%),
           transparent 0%,
-          transparent 25%,
-          rgba(255, 255, 255, 0.85) 60%,
-          rgba(255, 255, 255, 0.95) 100%);
-      z-index: 15;
+          transparent 0%,
+          rgba(243, 243, 243, 0.459) 70%,
+          rgb(194, 191, 191) 100%);
+      z-index: 5;
       pointer-events: none;
       transition: all 0.1s ease-out;
-    }
-
-    /* Content blur overlay - appears over content areas when cursor approaches */
-    .content-blur-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      z-index: 16;
-      pointer-events: none;
-      transition: all 0.2s ease-out;
-    }
-
-    .content-blur-overlay.active {
-      backdrop-filter: blur(8px);
-      background: rgba(255, 255, 255, 0.1);
     }
 
     /* Content layer */
@@ -101,42 +83,28 @@
       background: transparent;
     }
 
-    /* Enhanced custom cursor */
+    /* Custom cursor */
     .cursor {
       position: fixed;
-      width: 40px;
-      height: 40px;
-      border: 2px solid rgba(0, 0, 0, 0.8);
-      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
       pointer-events: none;
       z-index: 9999;
-      transition: all 0.15s ease;
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.1s ease;
+      backdrop-filter: blur(5px);
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .cursor-inner {
       position: fixed;
-      width: 8px;
-      height: 8px;
-      background: rgba(0, 0, 0, 0.9);
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
-      transition: all 0.1s ease;
-    }
-
-    .cursor.hover {
-      transform: scale(1.5);
-      border-color: rgba(0, 0, 0, 1);
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    .cursor.text-hover {
-      transform: scale(2);
-      border-color: rgba(0, 0, 0, 0.5);
-      background: rgba(255, 255, 255, 0.4);
+      transition: all 0.05s ease;
     }
 
     /* Navigation */
@@ -165,11 +133,7 @@
       opacity: 0;
       transform: translateY(-20px);
       animation: fadeInUp 1s ease-out 0.5s forwards;
-      text-shadow: 0 2px 20px rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(5px);
-      padding: 10px 15px;
-      border-radius: 25px;
-      background: rgba(255, 255, 255, 0.1);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
     .nav-links {
@@ -187,20 +151,24 @@
       opacity: 0;
       transform: translateY(-20px);
       animation: fadeInUp 1s ease-out forwards;
-      text-shadow: 0 2px 15px rgba(255, 255, 255, 0.8);
-      padding: 8px 12px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(5px);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
-    .nav-links a:nth-child(1) { animation-delay: 0.7s; }
-    .nav-links a:nth-child(2) { animation-delay: 0.8s; }
-    .nav-links a:nth-child(3) { animation-delay: 0.9s; }
+    .nav-links a:nth-child(1) {
+      animation-delay: 0.7s;
+    }
+
+    .nav-links a:nth-child(2) {
+      animation-delay: 0.8s;
+    }
+
+    .nav-links a:nth-child(3) {
+      animation-delay: 0.9s;
+    }
 
     .nav-links a:hover {
       transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.2);
+      opacity: 0.7;
     }
 
     /* Hero Section */
@@ -229,11 +197,7 @@
       opacity: 0;
       transform: translateY(50px);
       animation: fadeInUp 1.2s ease-out 1s forwards;
-      text-shadow: 0 4px 30px rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
     }
 
     .hero p {
@@ -246,11 +210,7 @@
       opacity: 0;
       transform: translateY(30px);
       animation: fadeInUp 1s ease-out 1.5s forwards;
-      text-shadow: 0 2px 20px rgba(255, 255, 255, 0.8);
-      padding: 15px;
-      border-radius: 15px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(8px);
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
     }
 
     /* Projects Section */
@@ -289,20 +249,13 @@
       direction: ltr;
     }
 
-    .project-info {
-      padding: 30px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-    }
-
     .project-info h3 {
       font-size: clamp(2.5rem, 5vw, 4rem);
       font-weight: 200;
       margin-bottom: 20px;
       letter-spacing: -2px;
       color: #000;
-      text-shadow: 0 2px 25px rgba(255, 255, 255, 0.9);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
     }
 
     .project-type {
@@ -312,7 +265,7 @@
       text-transform: uppercase;
       margin-bottom: 30px;
       font-weight: 500;
-      text-shadow: 0 1px 15px rgba(255, 255, 255, 0.7);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
     .project-description {
@@ -321,7 +274,7 @@
       color: #333;
       margin-bottom: 50px;
       font-weight: 300;
-      text-shadow: 0 2px 20px rgba(255, 255, 255, 0.8);
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
     }
 
     .project-link {
@@ -336,7 +289,7 @@
       transition: all 0.4s ease;
       border-bottom: 2px solid #000;
       padding-bottom: 8px;
-      text-shadow: 0 1px 15px rgba(255, 255, 255, 0.7);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
     .project-link:hover {
@@ -346,19 +299,59 @@
 
     .project-visual {
       aspect-ratio: 4/3;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 15px;
+      background: url("braclet-new10.jpg");
+      border-radius: 10px;
       overflow: hidden;
       position: relative;
       transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
       border: 1px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(15px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
     }
 
     .project-visual:hover {
-      transform: scale(1.02) rotateY(5deg);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      transform: scale(1.02);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-visual::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .project-visual:hover::after {
+      opacity: 1;
+    }
+
+    /* Project specific backgrounds */
+    .project-louis .project-visual {
+      background: url("braclet-new12.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 4s ease-in-out infinite;
+    }
+
+    .project-david .project-visual {
+      background: url("braclet-new10.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 5s ease-in-out infinite;
+    }
+
+    .project-cartier .project-visual {
+      background: url("braclet-new11.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease-in-out infinite;
+    }
+
+    .project-chartogne .project-visual {
+      background: url("braclet-new13.jpg");
+      background-size: 200% 200%;
+      animation: gradientShift 7s ease-in-out infinite;
     }
 
     /* Footer */
@@ -374,11 +367,7 @@
       margin-bottom: 60px;
       color: #000;
       letter-spacing: -1px;
-      text-shadow: 0 4px 30px rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
     }
 
     .footer-links {
@@ -395,17 +384,12 @@
       font-weight: 400;
       letter-spacing: 1px;
       transition: all 0.3s ease;
-      text-shadow: 0 2px 15px rgba(255, 255, 255, 0.7);
-      padding: 10px 15px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(8px);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
     .footer-links a:hover {
       color: #000;
       transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.1);
     }
 
     .footer-copyright {
@@ -413,7 +397,7 @@
       font-size: 12px;
       font-weight: 300;
       letter-spacing: 1px;
-      text-shadow: 0 1px 10px rgba(255, 255, 255, 0.5);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
     /* Animations */
@@ -421,6 +405,30 @@
       to {
         opacity: 1;
         transform: translateY(0);
+      }
+    }
+
+    @keyframes gradientMove {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      25% {
+        background-position: 100% 50%;
+      }
+      50% {
+        background-position: 100% 0%;
+      }
+      75% {
+        background-position: 0% 100%;
+      }
+    }
+
+    @keyframes dotMove {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 50px 50px;
       }
     }
 
@@ -440,6 +448,15 @@
       100% {
         transform: translateY(0vh) translateX(0px) scale(0);
         opacity: 0;
+      }
+    }
+
+    @keyframes gradientShift {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
       }
     }
 
@@ -473,18 +490,18 @@
       }
 
       .spotlight-overlay {
-        background: radial-gradient(circle 250px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        background: radial-gradient(circle 200px at var(--mouse-x, 50%) var(--mouse-y, 50%),
             transparent 0%,
-            transparent 15%,
-            rgba(255, 255, 255, 0.85) 50%,
-            rgba(255, 255, 255, 0.95) 100%);
+            transparent 20%,
+            rgba(255, 255, 255, 0.95) 60%,
+            rgba(92, 89, 89, 0.53) 100%);
       }
     }
 
     /* Mobile touch support */
     @media (hover: none) {
       .spotlight-overlay {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(120, 114, 114, 0.3);
       }
 
       body {
@@ -495,26 +512,29 @@
       .cursor-inner {
         display: none;
       }
+
+      .bg-layer {
+        background-size: cover; /* Reset to cover on mobile */
+        transform: none; /* Disable cursor-based transform on mobile */
+      }
     }
   </style>
 </head>
 
 <body>
   <!-- Animated background layer -->
-  <div class="bg-layer" id="bgLayer"></div>
+  <div class="bg-layer"></div>
 
   <!-- Moving particles -->
   <div class="particles" id="particles"></div>
 
-  <!-- Spotlight overlay -->
+  <!-- Spotlight overlay (white with hole) -->
   <div class="spotlight-overlay" id="spotlightOverlay"></div>
-  
-  <!-- Content blur overlay -->
-  <div class="content-blur-overlay" id="contentBlurOverlay"></div>
 
   <!-- Custom cursor -->
   <div class="cursor" id="cursor"></div>
   <div class="cursor-inner" id="cursorInner"></div>
+  <div class="water-drop"></div>
 
   <!-- Content layer -->
   <div class="content-layer">
@@ -523,7 +543,7 @@
       <div class="nav-content">
         <div class="logo">IMMERSIVE GARDEN</div>
         <div class="nav-links">
-          <a href="#work">Work</a>
+          <a href="index1.html">2</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
         </div>
@@ -534,7 +554,8 @@
     <section class="hero">
       <div class="hero-content">
         <h1>Transcend anything seen or felt before by crafting.</h1>
-        <p>Explore our collaboration with luxury brands, showcasing visionary digital experiences through immersive storytelling and cutting-edge technology.</p>
+        <p>Explore our collaboration with luxury brands, showcasing visionary digital experiences through immersive
+          storytelling and cutting-edge technology.</p>
       </div>
     </section>
 
@@ -545,7 +566,8 @@
           <div class="project-info">
             <div class="project-type">Web Experience</div>
             <h3>Louis Vuitton VIA</h3>
-            <p class="project-description">Explore our collaboration with Louis Vuitton on VIA, showcasing the Maison's Web 3 vision through its first digital trunk.</p>
+            <p class="project-description">Explore our collaboration with Louis Vuitton on VIA, showcasing the Maison's
+              Web 3 vision through its first digital trunk.</p>
             <a href="#" class="project-link">View Project</a>
           </div>
           <div class="project-visual"></div>
@@ -557,7 +579,8 @@
           <div class="project-info">
             <div class="project-type">Web Experience</div>
             <h3>David Whyte Experience</h3>
-            <p class="project-description">Step into David Whyte's poetry in a digital journey, capturing life's profound moments with artistic depth.</p>
+            <p class="project-description">Step into David Whyte's poetry in a digital journey, capturing life's
+              profound moments with artistic depth.</p>
             <a href="#" class="project-link">View Project</a>
           </div>
           <div class="project-visual"></div>
@@ -569,7 +592,8 @@
           <div class="project-info">
             <div class="project-type">E-Shop</div>
             <h3>Cartier End of Year 23</h3>
-            <p class="project-description">Discover Cartier's End of Year: redefining elegance with an immersive campaign, Above the Clouds.</p>
+            <p class="project-description">Discover Cartier's End of Year: redefining elegance with an immersive
+              campaign, Above the Clouds.</p>
             <a href="#" class="project-link">View Project</a>
           </div>
           <div class="project-visual"></div>
@@ -581,7 +605,8 @@
           <div class="project-info">
             <div class="project-type">Web Experience</div>
             <h3>Chartogne Taillet</h3>
-            <p class="project-description">Explore the rich heritage and vineyards of Chartogne-Taillet through immersive digital storytelling.</p>
+            <p class="project-description">Explore the rich heritage and vineyards of Chartogne-Taillet through
+              immersive digital storytelling.</p>
             <a href="#" class="project-link">View Project</a>
           </div>
           <div class="project-visual"></div>
@@ -593,7 +618,8 @@
           <div class="project-info">
             <div class="project-type">Web Experience</div>
             <h3>Cartier in Time</h3>
-            <p class="project-description">Dive into a journey with Jake Gyllenhaal, unveiling Cartier's timeless bond with time in a stunning digital showcase.</p>
+            <p class="project-description">Dive into a journey with Jake Gyllenhaal, unveiling Cartier's timeless bond
+              with time in a stunning digital showcase.</p>
             <a href="#" class="project-link">View Project</a>
           </div>
           <div class="project-visual"></div>
@@ -605,7 +631,8 @@
           <div class="project-info">
             <div class="project-type">Web Experience</div>
             <h3>Dioriviera</h3>
-            <p class="project-description">Step into an exquisite 3D journey through Dioriviera, where Maria Grazia Chiuri's visionary designs come to life in breathtaking detail.</p>
+            <p class="project-description">Step into an exquisite 3D journey through Dioriviera, where Maria Grazia
+              Chiuri's visionary designs come to life in breathtaking detail.</p>
             <a href="#" class="project-link">View Project</a>
           </div>
           <div class="project-visual"></div>
@@ -627,31 +654,23 @@
   </div>
 
   <script>
-    // Mouse position tracking
     let mouseX = 0;
     let mouseY = 0;
-    let isOverContent = false;
 
-    const cursor = document.getElementById('cursor');
-    const cursorInner = document.getElementById('cursorInner');
-    const spotlightOverlay = document.getElementById('spotlightOverlay');
-    const contentBlurOverlay = document.getElementById('contentBlurOverlay');
-    const bgLayer = document.getElementById('bgLayer');
-
-    // Create particles
+    // Create particles (unchanged)
     function createParticles() {
       const particlesContainer = document.getElementById('particles');
-      for (let i = 0; i < 30; i++) {
+      const numParticles = 50;
+      for (let i = 0; i < numParticles; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 15 + 's';
-        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDelay = `${Math.random() * 15}s`;
         particlesContainer.appendChild(particle);
       }
     }
 
-    // Enhanced mouse move handler with 3D parallax effect
+    // Mouse movement handling
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
@@ -660,84 +679,23 @@
       const mouseYPercent = (mouseY / window.innerHeight) * 100;
 
       // Update cursor positions
-      cursor.style.left = mouseX - 20 + 'px';
-      cursor.style.top = mouseY - 20 + 'px';
-
-      cursorInner.style.left = mouseX - 4 + 'px';
-      cursorInner.style.top = mouseY - 4 + 'px';
+      const cursor = document.getElementById('cursor');
+      const cursorInner = document.getElementById('cursorInner');
+      cursor.style.transform = `translate(${mouseX - 15}px, ${mouseY - 15}px)`;
+      cursorInner.style.transform = `translate(${mouseX - 3}px, ${mouseY - 3}px)`;
 
       // Update spotlight position
+      const spotlightOverlay = document.getElementById('spotlightOverlay');
       spotlightOverlay.style.setProperty('--mouse-x', mouseXPercent + '%');
       spotlightOverlay.style.setProperty('--mouse-y', mouseYPercent + '%');
 
-      // 3D Parallax effect for background
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      
-      const deltaX = (mouseX - centerX) / centerX;
-      const deltaY = (mouseY - centerY) / centerY;
-      
-      const rotateX = deltaY * 2; // Reduced rotation for subtlety
-      const rotateY = deltaX * 2;
-      const translateX = deltaX * 20;
-      const translateY = deltaY * 20;
-      
-      bgLayer.style.transform = `
-        translateX(${translateX}px) 
-        translateY(${translateY}px) 
-        rotateX(${rotateX}deg) 
-        rotateY(${rotateY}deg)
-        scale(1.1)
-      `;
-
-      // Check if mouse is over content elements
-      checkContentProximity(e);
-    });
-
-    // Check proximity to content elements and apply blur effect
-    function checkContentProximity(e) {
-      const contentElements = document.querySelectorAll('.hero-content, .project-info, .nav, .footer');
-      let nearContent = false;
-
-      contentElements.forEach(element => {
-        const rect = element.getBoundingClientRect();
-        const buffer = 100; // Distance buffer around content
-        
-        if (mouseX >= rect.left - buffer && 
-            mouseX <= rect.right + buffer && 
-            mouseY >= rect.top - buffer && 
-            mouseY <= rect.bottom + buffer) {
-          nearContent = true;
-        }
-      });
-
-      if (nearContent !== isOverContent) {
-        isOverContent = nearContent;
-        if (isOverContent) {
-          contentBlurOverlay.classList.add('active');
-          cursor.classList.add('text-hover');
-        } else {
-          contentBlurOverlay.classList.remove('active');
-          cursor.classList.remove('text-hover');
-        }
-      }
-    }
-
-    // Enhanced hover effects for interactive elements
-    const interactiveElements = document.querySelectorAll('a, .project-visual, .logo');
-
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.classList.add('hover');
-        cursor.classList.remove('text-hover');
-      });
-
-      el.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hover');
-        if (isOverContent) {
-          cursor.classList.add('text-hover');
-        }
-      });
+      // Update background position and scale for motion effect
+      const bgLayer = document.querySelector('.bg-layer');
+      const moveX = ((mouseX / window.innerWidth) - 0.5) * 50; // Move up to 50px left/right
+      const moveY = ((mouseY / window.innerHeight) - 0.5) * 50; // Move up to 50px up/down
+      const scale = 1 + ((mouseY / window.innerHeight) * 0.05); // Subtle zoom effect
+      bgLayer.style.backgroundPosition = `calc(50% + ${moveX}px) calc(50% + ${moveY}px)`;
+      bgLayer.style.transform = `scale(${scale})`;
     });
 
     // Scroll animations for projects
@@ -747,6 +705,7 @@
 
       projects.forEach(project => {
         const projectTop = project.getBoundingClientRect().top;
+
         if (projectTop < triggerBottom) {
           project.classList.add('visible');
         }
@@ -767,17 +726,6 @@
       });
     }, observerOptions);
 
-    // Enhanced scroll handling with parallax
-    let scrollY = 0;
-    window.addEventListener('scroll', () => {
-      scrollY = window.scrollY;
-      
-      // Parallax effect on scroll
-      bgLayer.style.transform += ` translateY(${scrollY * 0.5}px)`;
-      
-      animateOnScroll();
-    });
-
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       createParticles();
@@ -787,12 +735,17 @@
         observer.observe(project);
       });
 
+      // Initial animation check
       animateOnScroll();
-      
+
       // Set initial spotlight position
+      const spotlightOverlay = document.getElementById('spotlightOverlay');
       spotlightOverlay.style.setProperty('--mouse-x', '50%');
       spotlightOverlay.style.setProperty('--mouse-y', '50%');
     });
+
+    // Event listeners
+    window.addEventListener('scroll', animateOnScroll);
 
     // Smooth scroll for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -811,36 +764,51 @@
     // Mobile touch handling
     if ('ontouchstart' in window) {
       document.body.style.cursor = 'auto';
+      const cursor = document.getElementById('cursor');
+      const cursorInner = document.getElementById('cursorInner');
       cursor.style.display = 'none';
       cursorInner.style.display = 'none';
-      contentBlurOverlay.style.display = 'none';
     }
 
-    // Enhanced wheel event handling
+    let lastY = 0;
+
+    let positionY = 50; // Initial vertical position in percentage
+
+    function moveBackground(direction) {
+      const step = 1; // Control speed
+      if (direction === "up") {
+        positionY = Math.max(0, positionY - step);
+      } else {
+        positionY = Math.min(100, positionY + step);
+      }
+      document.querySelector('.bg-layer').style.backgroundPosition = `center ${positionY}%`;
+    }
+
+    // Listen to mouse wheel events
     window.addEventListener("wheel", function (e) {
-      const scrollDelta = e.deltaY;
-      const scrollSpeed = 0.002;
-      
-      // Additional parallax effect on wheel scroll
-      bgLayer.style.transform += ` scale(${1.1 + Math.abs(scrollDelta) * scrollSpeed})`;
-      
-      setTimeout(() => {
-        bgLayer.style.transform = bgLayer.style.transform.replace(/scale\([^)]*\)/, 'scale(1.1)');
-      }, 100);
+      if (e.deltaY < 0) {
+        moveBackground("up"); // Scroll up → move background up
+      } else {
+        moveBackground("down"); // Scroll down → move background down
+      }
     });
 
-    // Performance optimization: Throttle mouse move events
-    let mouseMoveThrottled = false;
-    const originalMouseMove = document.addEventListener;
-    
-    function throttledMouseMove(e) {
-      if (!mouseMoveThrottled) {
-        mouseMoveThrottled = true;
-        requestAnimationFrame(() => {
-          mouseMoveThrottled = false;
-        });
-      }
+    // Water drop animation
+    const drop = document.querySelector('.water-drop');
+
+    function moveDrop() {
+      const randomX = Math.random() * window.innerWidth;
+      const randomY = Math.random() * window.innerHeight;
+
+      drop.style.left = `${randomX}px`;
+      drop.style.top = `${randomY}px`;
+
+      // Repeat after some time
+      setTimeout(moveDrop, 1000 + Math.random() * 1500); // Move every 1-2.5s
     }
+
+    // Start the drop movement
+    moveDrop();
   </script>
 </body>
 

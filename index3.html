@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smoky Cursor and Flashing Ball Website</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url(backgroung2.jpg);
+            color: #fff;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .smoke-particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="smokeCanvas"></canvas>
+    <div class="content">
+        <h1>Welcome to My Website</h1>
+        <p>Experience the enhanced lucid bubble effect at the mouse cursor, even when stationary, and a randomly moving raindrop-shaped ball that appears for 1 second and disappears for 2 seconds, with a smoky trail when visible. A fully black overlay covers the background, but only the areas around the mouse and ball are clear, revealing the background image.</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('smokeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Particle class for smoke and bubble effect
+        class Particle {
+            constructor(x, y, isBubble = false) {
+                this.x = x;
+                this.y = y;
+                this.size = isBubble ? Math.random() * 30 + 15 : Math.random() * 20 + 10; // Larger for bubbles
+                this.alpha = isBubble ? 0.2 : 0.5; // More transparent for bubbles
+                this.velocity = {
+                    x: (Math.random() - 0.5) * (isBubble ? 1 : 3),
+                    y: (Math.random() - 0.5) * (isBubble ? 1 : 3)
+                };
+                this.isBubble = isBubble;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.isBubble ? `rgba(255, 255, 255, ${this.alpha})` : `rgba(255, 255, 255, ${this.alpha})`;
+                if (this.isBubble) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${this.alpha + 0.1})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.size *= this.isBubble ? 0.98 : 0.95;
+                this.alpha -= this.isBubble ? 0.01 : 0.015;
+                this.draw();
+            }
+        }
+
+        // Raindrop shape generator for ball
+        function drawRaindrop(ctx, x, y, size) {
+            ctx.beginPath();
+            ctx.moveTo(x, y - size * 1.5); // Top point
+            ctx.quadraticCurveTo(
+                x + size * 0.8, y - size * 0.5, // Control point
+                x, y + size // Bottom point
+            );
+            ctx.quadraticCurveTo(
+                x - size * 0.8, y - size * 0.5, // Control point
+                x, y - size * 1.5 // Back to top
+            );
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+        }
+
+        // Enhanced lucid shape generator for mouse cursor
+        function drawEnhancedLucidShape(ctx, x, y, size) {
+            ctx.beginPath();
+            // Outer irregular shape (larger and more detailed)
+            ctx.moveTo(x - size * 0.9, y - size * 0.4);
+            ctx.quadraticCurveTo(x - size * 1.1, y - size * 1.0, x - size * 0.4, y - size * 1.5);
+            ctx.quadraticCurveTo(x + size * 0.3, y - size * 1.6, x + size * 0.9, y - size * 1.0);
+            ctx.quadraticCurveTo(x + size * 1.1, y - size * 0.4, x + size * 0.7, y + size * 0.3);
+            ctx.quadraticCurveTo(x + size * 0.3, y + size * 0.8, x - size * 0.3, y + size * 0.5);
+            ctx.closePath();
+
+            // Gradient fill for a better design
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * 1.2);
+            gradient.addColorStop(0, 'rgba(100, 150, 255, 0.9)');
+            gradient.addColorStop(1, 'rgba(50, 100, 200, 0.7)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Darker outline
+            ctx.strokeStyle = 'rgba(0, 0, 50, 0.9)';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+
+            // Draw more internal bubbles
+            for (let i = 0; i < 30; i++) {
+                const bubbleX = x + (Math.random() - 0.5) * size * 0.7;
+                const bubbleY = y + (Math.random() - 0.5) * size * 0.7;
+                const bubbleSize = Math.random() * 6 + 3;
+                ctx.beginPath();
+                ctx.arc(bubbleX, bubbleY, bubbleSize, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.fill();
+            }
+        }
+
+        // Ball class for the randomly moving raindrop
+        class Ball {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = 20; // Larger size for raindrop
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 6,
+                    y: (Math.random() - 0.5) * 6
+                };
+                this.visible = true;
+                this.lastToggle = Date.now();
+                this.toggleInterval = 3000; // 3 seconds (2s hidden + 1s visible)
+                this.visibleDuration = 1000; // 1 second visible
+            }
+
+            draw() {
+                if (this.visible) {
+                    drawRaindrop(ctx, this.x, this.y, this.size);
+                }
+            }
+
+            update() {
+                // Update position
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+
+                // Bounce off canvas edges
+                if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+                    this.velocity.x = -this.velocity.x;
+                }
+                if (this.y + this.size * 1.5 > canvas.height || this.y - this.size * 1.5 < 0) {
+                    this.velocity.y = -this.velocity.y;
+                }
+
+                // Toggle visibility every 3 seconds
+                const currentTime = Date.now();
+                if (currentTime - this.lastToggle >= this.toggleInterval) {
+                    this.visible = !this.visible;
+                    this.lastToggle = currentTime;
+                } else if (this.visible && currentTime - this.lastToggle >= this.visibleDuration) {
+                    this.visible = false;
+                }
+
+                // Create smoke particles only when visible
+                if (this.visible) {
+                    for (let i = 0; i < 3; i++) {
+                        particles.push(new Particle(this.x, this.y));
+                    }
+                }
+
+                this.draw();
+            }
+        }
+
+        // Array to store particles
+        const particles = [];
+        // Create a single ball
+        const ball = new Ball();
+
+        // Mouse position and state
+        let mouse = { x: 0, y: 0, prevX: 0, prevY: 0, isMoving: false };
+        let lastParticleTime = Date.now();
+
+        // Update mouse position
+        document.addEventListener('mousemove', (e) => {
+            mouse.prevX = mouse.x;
+            mouse.prevY = mouse.y;
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            mouse.isMoving = true;
+
+            // Create bubble particles on move
+            for (let i = 0; i < 4; i++) {
+                particles.push(new Particle(mouse.x, mouse.y, true));
+            }
+            lastParticleTime = Date.now();
+        });
+
+        // Detect when mouse leaves canvas
+        document.addEventListener('mouseout', () => {
+            mouse.isMoving = false;
+        });
+
+        // Animation loop
+        function animate() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw fully black overlay
+            ctx.fillStyle = 'rgba(0, 0, 0, 1)'; // 100% opaque black overlay
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Clear overlay around mouse and ball
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(mouse.x, mouse.y, 70, 0, Math.PI * 2); // Larger clear area around mouse
+            ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+            ctx.fill();
+
+            if (ball.visible) {
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, 70, 0, Math.PI * 2); // Larger clear area around ball
+                ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+                ctx.fill();
+            }
+
+            // Reset compositing operation for drawing particles and shapes
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Draw enhanced lucid shape for mouse cursor
+            drawEnhancedLucidShape(ctx, mouse.x, mouse.y, 40);
+
+            // Create bubble particles continuously, even when mouse is stationary
+            if (Date.now() - lastParticleTime > 100) {
+                for (let i = 0; i < 2; i++) {
+                    particles.push(new Particle(mouse.x, mouse.y, true));
+                }
+                lastParticleTime = Date.now();
+            }
+
+            // Update and draw ball
+            ball.update();
+
+            // Update and draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                if (particles[i].alpha <= 0 || particles[i].size <= 0.5) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
