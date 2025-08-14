@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             background: url(backgroung2.jpg);
-            color: #fff;
+            color: #f80e0e;
             font-family: Arial, sans-serif;
             overflow: hidden;
         }
@@ -23,7 +23,7 @@
 
         .content {
             position: relative;
-            z-index: 1;
+            z-index: 9999;
             text-align: center;
             padding: 50px;
         }
@@ -42,7 +42,7 @@
 
         .smoke-particle {
             position: absolute;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(243, 238, 238, 0.575);
             border-radius: 50%;
             pointer-events: none;
         }
@@ -123,14 +123,7 @@
         // Enhanced lucid shape generator for mouse cursor
         function drawEnhancedLucidShape(ctx, x, y, size) {
             ctx.beginPath();
-            // Outer irregular shape (larger and more detailed)
-            ctx.moveTo(x - size * 0.9, y - size * 0.4);
-            ctx.quadraticCurveTo(x - size * 1.1, y - size * 1.0, x - size * 0.4, y - size * 1.5);
-            ctx.quadraticCurveTo(x + size * 0.3, y - size * 1.6, x + size * 0.9, y - size * 1.0);
-            ctx.quadraticCurveTo(x + size * 1.1, y - size * 0.4, x + size * 0.7, y + size * 0.3);
-            ctx.quadraticCurveTo(x + size * 0.3, y + size * 0.8, x - size * 0.3, y + size * 0.5);
-            ctx.closePath();
-
+            
             // Gradient fill for a better design
             const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * 1.2);
             gradient.addColorStop(0, 'rgba(100, 150, 255, 0.9)');
@@ -245,7 +238,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Draw fully black overlay
-            ctx.fillStyle = 'rgba(0, 0, 0, 1)'; // 100% opaque black overlay
+            ctx.fillStyle = 'rgba(255,  255, 255)'; // 100% opaque black overlay
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Clear overlay around mouse and ball
